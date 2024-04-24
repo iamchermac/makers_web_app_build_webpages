@@ -2,6 +2,15 @@ from playwright.sync_api import Page, expect
 
 # Tests for your routes go here
 
+"""
+We can get a goodbye message from the /goodbye page
+"""
+def test_get_goodbye(page, test_web_address):
+    criteria = 'Bye!'
+    page.goto(f"http://{test_web_address}/goodbye")
+    strong_tag = page.locator("strong")
+    expect(strong_tag).to_have_text(criteria)
+
 # === Example Code Below ===
 
 """
