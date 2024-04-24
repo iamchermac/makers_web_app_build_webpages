@@ -43,6 +43,9 @@ There are two videos to support:
 # Seed the development database
 (html-application-starter-venv); python seed_dev_database.py
 
+# Install playwright browser drivers
+(html-application-starter-venv); playwright install
+
 # Run the tests (with extra logging)
 (html-application-starter-venv); pytest -sv
 
