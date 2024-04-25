@@ -41,3 +41,10 @@ def apply_music_web_routes(app):
         repository = ArtistRepository(connection)
         repository.create(Artist(None, name, genre))
         return ""
+    
+    @app.route('/albums_list', methods=['GET'])
+    def list_albums_web():
+        connection = get_flask_database_connection(app)
+        repository = AlbumRepository(connection)
+        albums = repository.all()
+        return render_template('albums.html', albums=albums)

@@ -1,5 +1,6 @@
 from lib.album import Album
 from lib.artist import Artist
+from playwright.sync_api import Page, expect
 
 """
 POST /albums
@@ -85,3 +86,30 @@ def test_post_artists(db_connection, web_client):
     assert response_get.status_code == criteria_code
     assert response_post.data.decode('utf-8') == criteria_response_post
     assert response_get.data.decode('utf-8') == criteria_response_get
+
+"""
+We can list out all the albums
+"""
+def test_get_albums_list(db_connection, page, test_web_address):
+    albums = [
+        Album(1, 'Doolittle', 1989, 1),
+        Album(2, 'Surfer Rosa', 1988, 1),
+        Album(3, 'Waterloo', 1974, 2),
+        Album(4, 'Super Trouper', 1980, 2),
+        Album(5, 'Bossanova', 1990, 1),
+        Album(6, 'Lover', 2019, 3),
+        Album(7, 'Folklore', 2020, 3),
+        Album(8, 'I Put a Spell on You', 1965, 4),
+        Album(9, 'Baltimore', 1978, 4),
+        Album(10, 'Here Comes the Sun', 1971, 4),
+        Album(11, 'Fodder on My Wings', 1982, 4),
+        Album(12, 'Ring Ring', 1973, 2)
+    ]
+    
+    criteria = [f"Title: {album.title}\nReleased: {album.release_year}" for album in albums]
+    
+    db_connection.seed("seeds/music_library.sql")
+    
+    page.goto(f"http://{test_web_address}/albums_list")
+    list_items = page.locator("div")
+    expect(list_items).to_have_text(criteria)
