@@ -113,3 +113,46 @@ def test_get_albums_list(db_connection, page, test_web_address):
     page.goto(f"http://{test_web_address}/albums_list")
     list_items = page.locator("div")
     expect(list_items).to_have_text(criteria)
+
+"""
+We can retrieve a single album
+"""
+def test_get_album_3(db_connection, page, test_web_address):
+    albums = [
+        Album(1, 'Doolittle', 1989, 1),
+        Album(2, 'Surfer Rosa', 1988, 1),
+        Album(3, 'Waterloo', 1974, 2),
+        Album(4, 'Super Trouper', 1980, 2),
+        Album(5, 'Bossanova', 1990, 1),
+        Album(6, 'Lover', 2019, 3),
+        Album(7, 'Folklore', 2020, 3),
+        Album(8, 'I Put a Spell on You', 1965, 4),
+        Album(9, 'Baltimore', 1978, 4),
+        Album(10, 'Here Comes the Sun', 1971, 4),
+        Album(11, 'Fodder on My Wings', 1982, 4),
+        Album(12, 'Ring Ring', 1973, 2)
+    ]
+    
+    artists = [
+        Artist(1, "Pixies", "Rock"),
+        Artist(2, "ABBA", "Pop"),
+        Artist(3, "Taylor Swift", "Pop"),
+        Artist(4, "Nina Simone", "Jazz"),
+    ]
+    
+    album_id = 3
+    title = albums[album_id - 1].title
+    release_year = albums[album_id - 1].release_year
+    artist_name = [artist.name for artist in artists if artist.id == albums[album_id - 1].artist_id][0]
+    
+    db_connection.seed("seeds/music_library.sql")
+
+    page.goto(f"http://{test_web_address}/albums/{album_id}")
+    title_element = page.locator(".t-title")
+    expect(title_element).to_have_text(title)
+    
+    release_year_element = page.locator(".t-release-year")
+    expect(release_year_element).to_have_text(str(release_year))
+    
+    artist_element = page.locator(".t-artist")
+    expect(artist_element).to_have_text(artist_name)
