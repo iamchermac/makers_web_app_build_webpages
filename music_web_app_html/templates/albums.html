@@ -11,7 +11,7 @@
       <div>
         <!-- We can use {{ placeholders }} in HTML attributes too -->
         <br />
-        Title: {{album.title}}
+        Title: <a href="/albums/{{album.id}}">{{album.title}}</a>
         <br />
         Released: {{album.release_year}}
       </div>
