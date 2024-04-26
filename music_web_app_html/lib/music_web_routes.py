@@ -81,6 +81,22 @@ def apply_music_web_routes(app):
         artists = repository.all()
         return render_template('artists.html', artists=artists)
     
+    @app.route('/artists/new', methods=['GET'])
+    def get_new_artist():
+        return render_template('new_artist.html')
+    
+    @app.route('/artists/list', methods=['POST'])
+    def add_artist_to_list():
+        connection = get_flask_database_connection(app)
+        name = request.form['name']
+        genre = request.form['genre']
+        
+        repository = ArtistRepository(connection)
+        artist = Artist(None, name, genre)
+        repository.create(artist)
+        
+        return redirect('/artists/list')
+    
     @app.route('/artists/<int:id>', methods=['GET'])
     def view_artist(id):
         connection = get_flask_database_connection(app)

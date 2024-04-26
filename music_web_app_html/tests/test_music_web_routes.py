@@ -322,3 +322,30 @@ def test_create_album_web(db_connection, page, test_web_address):
     
     list_items = page.locator("div")
     expect(list_items).to_have_text(criteria)
+
+"""
+When we create a new artist
+We see it in the artists list
+"""
+def test_create_artist_web(db_connection, page, test_web_address):
+    name = 'Wild nothing'
+    genre = 'Indie'
+    artists = [
+        Artist(1, "Pixies", "Rock"),
+        Artist(2, "ABBA", "Pop"),
+        Artist(3, "Taylor Swift", "Pop"),
+        Artist(4, "Nina Simone", "Jazz"),
+        Artist(5, name, genre)
+    ]
+    
+    criteria = [f"Name: {artist.name}\nGenre: {artist.genre}" for artist in artists]
+    
+    db_connection.seed("seeds/music_library.sql")
+    page.goto(f"http://{test_web_address}/artists/list")
+    page.click("text=Add a new artist")
+    page.fill("input[name='name']", name)
+    page.fill("input[name='genre']", genre)
+    page.click("text=Create Artist")
+    
+    list_items = page.locator("div")
+    expect(list_items).to_have_text(criteria)
