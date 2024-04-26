@@ -53,6 +53,18 @@ def apply_music_web_routes(app):
     def get_new_album():
         return render_template('new_album.html')
     
+    @app.route('/albums/list', methods=['POST'])
+    def add_album_to_list():
+        connection = get_flask_database_connection(app)
+        title = request.form['title']
+        release_year = request.form['release_year']
+        
+        repository = AlbumRepository(connection)
+        album = Album(None, title, release_year, None)
+        repository.create(album)
+        
+        return redirect('/albums/list')
+    
     @app.route('/albums/<int:id>', methods=['GET'])
     def view_album(id):
         connection = get_flask_database_connection(app)

@@ -295,6 +295,23 @@ def test_create_album_web(db_connection, page, test_web_address):
     title = 'Voyage'
     release_year = 2022
     artist_id = 2
+    albums = [
+        Album(1, 'Doolittle', 1989, 1),
+        Album(2, 'Surfer Rosa', 1988, 1),
+        Album(3, 'Waterloo', 1974, 2),
+        Album(4, 'Super Trouper', 1980, 2),
+        Album(5, 'Bossanova', 1990, 1),
+        Album(6, 'Lover', 2019, 3),
+        Album(7, 'Folklore', 2020, 3),
+        Album(8, 'I Put a Spell on You', 1965, 4),
+        Album(9, 'Baltimore', 1978, 4),
+        Album(10, 'Here Comes the Sun', 1971, 4),
+        Album(11, 'Fodder on My Wings', 1982, 4),
+        Album(12, 'Ring Ring', 1973, 2),
+        Album(13, title, release_year, artist_id)
+    ]
+    
+    criteria = [f"Title: {album.title}\nReleased: {album.release_year}" for album in albums]
     
     db_connection.seed("seeds/music_library.sql")
     page.goto(f"http://{test_web_address}/albums/list")
@@ -303,8 +320,5 @@ def test_create_album_web(db_connection, page, test_web_address):
     page.fill("input[name='release_year']", str(release_year))
     page.click("text=Create Album")
     
-    title_element = page.locator(".t-title")
-    expect(title_element).to_have_text(title)
-    
-    release_year_element = page.locator(".t-release-year")
-    expect(release_year_element).to_have_text(str(release_year))
+    list_items = page.locator("div")
+    expect(list_items).to_have_text(criteria)
