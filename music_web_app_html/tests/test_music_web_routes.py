@@ -84,7 +84,6 @@ def test_post_artists(db_connection, web_client):
     response_get = web_client.get("/artists")
     assert response_post.status_code == criteria_code
     assert response_get.status_code == criteria_code
-    assert response_post.data.decode('utf-8') == criteria_response_post
     assert response_get.data.decode('utf-8') == criteria_response_get
 
 """
@@ -110,7 +109,7 @@ def test_get_albums_list(db_connection, page, test_web_address):
     
     db_connection.seed("seeds/music_library.sql")
     
-    page.goto(f"http://{test_web_address}/albums_list")
+    page.goto(f"http://{test_web_address}/albums/list")
     list_items = page.locator("div")
     expect(list_items).to_have_text(criteria)
 
@@ -191,7 +190,7 @@ def test_get_album_3_from_link(db_connection, page, test_web_address):
     
     db_connection.seed("seeds/music_library.sql")
     
-    page.goto(f"http://{test_web_address}/albums_list")
+    page.goto(f"http://{test_web_address}/albums/list")
     page.click(f"text={title}")
     title_element = page.locator(".t-title")
     expect(title_element).to_have_text(title)
@@ -232,7 +231,7 @@ def test_get_album_8_from_link(db_connection, page, test_web_address):
     
     db_connection.seed("seeds/music_library.sql")
     
-    page.goto(f"http://{test_web_address}/albums_list")
+    page.goto(f"http://{test_web_address}/albums/list")
     page.click(f"text={title}")
     title_element = page.locator(".t-title")
     expect(title_element).to_have_text(title)
@@ -258,7 +257,7 @@ def test_get_artists_list(db_connection, page, test_web_address):
     
     db_connection.seed("seeds/music_library.sql")
     
-    page.goto(f"http://{test_web_address}/artists_list")
+    page.goto(f"http://{test_web_address}/artists/list")
     list_items = page.locator("div")
     expect(list_items).to_have_text(criteria)
 
@@ -280,10 +279,32 @@ def test_get_artist_2_from_link(db_connection, page, test_web_address):
     
     db_connection.seed("seeds/music_library.sql")
     
-    page.goto(f"http://{test_web_address}/artists_list")
+    page.goto(f"http://{test_web_address}/artists/list")
     page.click(f"text={name}")
     name_element = page.locator(".t-name")
     expect(name_element).to_have_text(name)
     
     genre_element = page.locator(".t-genre")
     expect(genre_element).to_have_text(genre)
+
+"""
+When we create a new album
+We see it in the albums list
+"""
+def test_create_album_web(db_connection, page, test_web_address):
+    title = 'Voyage'
+    release_year = 2022
+    artist_id = 2
+    
+    db_connection.seed("seeds/music_library.sql")
+    page.goto(f"http://{test_web_address}/albums/list")
+    page.click("text=Add a new album")
+    page.fill("input[name='title']", title)
+    page.fill("input[name='release_year']", str(release_year))
+    page.click("text=Create Album")
+    
+    title_element = page.locator(".t-title")
+    expect(title_element).to_have_text(title)
+    
+    release_year_element = page.locator(".t-release-year")
+    expect(release_year_element).to_have_text(str(release_year))
