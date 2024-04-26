@@ -242,3 +242,48 @@ def test_get_album_8_from_link(db_connection, page, test_web_address):
     
     artist_element = page.locator(".t-artist")
     expect(artist_element).to_have_text(artist_name)
+
+"""
+We can list out all artists
+"""
+def test_get_artists_list(db_connection, page, test_web_address):
+    artists = [
+        Artist(1, "Pixies", "Rock"),
+        Artist(2, "ABBA", "Pop"),
+        Artist(3, "Taylor Swift", "Pop"),
+        Artist(4, "Nina Simone", "Jazz"),
+    ]
+    
+    criteria = [f"Name: {artist.name}\nGenre: {artist.genre}" for artist in artists]
+    
+    db_connection.seed("seeds/music_library.sql")
+    
+    page.goto(f"http://{test_web_address}/artists_list")
+    list_items = page.locator("div")
+    expect(list_items).to_have_text(criteria)
+
+"""
+We can retrieve a single artist
+via an associated link within the list of artists
+"""
+def test_get_artist_2_from_link(db_connection, page, test_web_address):
+    artists = [
+        Artist(1, "Pixies", "Rock"),
+        Artist(2, "ABBA", "Pop"),
+        Artist(3, "Taylor Swift", "Pop"),
+        Artist(4, "Nina Simone", "Jazz"),
+    ]
+    
+    artist_id = 2
+    name = artists[artist_id - 1].name
+    genre = artists[artist_id - 1].genre
+    
+    db_connection.seed("seeds/music_library.sql")
+    
+    page.goto(f"http://{test_web_address}/artists_list")
+    page.click(f"text={name}")
+    name_element = page.locator(".t-name")
+    expect(name_element).to_have_text(name)
+    
+    genre_element = page.locator(".t-genre")
+    expect(genre_element).to_have_text(genre)
